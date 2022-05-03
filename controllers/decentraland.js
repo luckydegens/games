@@ -19,7 +19,7 @@ const getRandomFaces = (faces) => {
       result.push(faces[randomIndex]);
     }
   }
-  
+
   return result;
 };
 
@@ -49,16 +49,16 @@ const getSlotMachineResult = async (req, res, next) => {
       return res.status(200).json({
         success: true,
         data: {
-          message: `You already played ${MAX_GAMES_PER_DAY} time,try again tomorrow!`,
+          message: `You already played ${MAX_GAMES_PER_DAY} time today, try again tomorrow!`,
           availableAttempts: 0
         }
       });
     }
 
     const chances = {
-      panda: 100,
+      panda: 0,
       og: 10000,
-      bull: 0,
+      bull: 100,
       ape: 0,
       whale: 0,
       frog: 0
@@ -87,12 +87,12 @@ const getSlotMachineResult = async (req, res, next) => {
     });
 
     res.status(200).json({
-      success : true, 
-      data: { 
+      success : true,
+      data: {
         win: !!winFaces,
         faces: resultFaces,
         availableAttempts: MAX_GAMES_PER_DAY - (previousGames.length + 1),
-        message: !!winFaces ? `Congratulation you just win a ${winFaces} NFT` : `Sorry you didn't win this time, try again`
+        message: !!winFaces ? `Congratulation! you just won a ${winFaces} NFT. We whitelisted your wallet adress for the next mint. For any question, go to our discord.` : `Sorry you didn't win this time, try again`
       }
     })
   } catch(err) {

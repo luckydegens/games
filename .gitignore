@@ -67,3 +67,5 @@ typings/
 .env
 
 .history/
+yarn.lock
+perso.md
