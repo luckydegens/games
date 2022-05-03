@@ -28,7 +28,10 @@ const getSlotMachineResult = async (req, res, next) => {
     const { walletId } = req.body;
 
     if (!walletId) {
-      throw new APIError(400, 'Wallet is required');
+      return res.status(200).json({
+        success: false,
+        error: "Not wallet ID was provided"
+      })
     }
 
     const now = new Date();
@@ -43,7 +46,13 @@ const getSlotMachineResult = async (req, res, next) => {
     });
 
     if (previousGames.length >= MAX_GAMES_PER_DAY) {
-      throw new APIError(400, 'Limit exhausted. Try tomorrow');
+      return res.status(200).json({
+        success: true,
+        data: {
+          message: `You already played ${MAX_GAMES_PER_DAY} time,try again tomorrow!`,
+          availableAttempts: 0
+        }
+      });
     }
 
     const chances = {
@@ -82,7 +91,8 @@ const getSlotMachineResult = async (req, res, next) => {
       data: { 
         win: !!winFaces,
         faces: resultFaces,
-        availableAttempts: MAX_GAMES_PER_DAY - (previousGames.length + 1)
+        availableAttempts: MAX_GAMES_PER_DAY - (previousGames.length + 1),
+        message: !!winFaces ? `Congratulation you just win a ${winFaces} NFT` : `Sorry you didn't win this time, try again`
       }
     })
   } catch(err) {
