@@ -5,6 +5,9 @@ const GameResult = mongoose.model('GameResult');
 
 const { APIError } = require('../helpers/errors');
 
+const airtable = require('../lib/airtable');
+const activityAirtable = airtable('app0EcfjD3KNKygVG', 'activity');
+
 const MAX_GAMES_PER_DAY = 10;
 
 const getRandomFaces = (faces) => {
@@ -23,9 +26,23 @@ const getRandomFaces = (faces) => {
   return result;
 };
 
+const pushSlotDataToAirtable = async ({ walletId, userId = null, winFaces = null, request, response }) => {
+  const event = !!winFaces ? 'win' : 'lose';
+  const notes = !!winFaces ? `win ${winFaces}` : 'lose';
+
+  return await activityAirtable.create({
+    userId, event, notes,
+    wallet: `${walletId}`,
+    request: JSON.stringify(request),
+    response: JSON.stringify(response)
+  }).catch(err => {
+    console.log(`Airtable Error: ${err.message}`)
+  });
+};
+
 const getSlotMachineResult = async (req, res, next) => {
   try {
-    const { walletId } = req.body;
+    const { walletId, userId } = req.body;
 
     if (!walletId) {
       return res.status(200).json({
@@ -46,13 +63,20 @@ const getSlotMachineResult = async (req, res, next) => {
     });
 
     if (previousGames.length >= MAX_GAMES_PER_DAY) {
-      return res.status(200).json({
+      const response = {
         success: true,
         data: {
           message: `You already played ${MAX_GAMES_PER_DAY} time today, try again tomorrow!`,
           availableAttempts: 0
         }
+      };
+
+      await pushSlotDataToAirtable({
+        walletId, userId, response,
+        request: req.body
       });
+
+      return res.status(200).json(response);
     }
 
     const chances = {
@@ -86,7 +110,7 @@ const getSlotMachineResult = async (req, res, next) => {
       win: !!winFaces
     });
 
-    res.status(200).json({
+    const response = {
       success : true,
       data: {
         win: !!winFaces,
@@ -94,12 +118,51 @@ const getSlotMachineResult = async (req, res, next) => {
         availableAttempts: MAX_GAMES_PER_DAY - (previousGames.length + 1),
         message: !!winFaces ? `Congratulation! you just won a ${winFaces} NFT. We whitelisted your wallet adress for the next mint. For any question, go to our discord.` : `Sorry you didn't win this time, try again`
       }
-    })
+    };
+
+    await pushSlotDataToAirtable({
+      walletId, userId, response, winFaces,
+      request: req.body
+    });
+
+    res.status(200).json(response);
+  } catch(err) {
+    next(err);
+  }
+};
+
+const saveAnalytics = async (req, res, next) => {
+  try {
+    const { userId, walletId, event } = req.body;
+
+    if (!userId) {
+      throw new APIError(400, 'UserId is required');
+    }
+
+    if (!event) {
+      throw new APIError(400, 'Event is required');
+    }
+
+    const response = {
+      success: true
+    };
+
+    await activityAirtable.create({
+      userId, event,
+      wallet: `${walletId}`,
+      request: JSON.stringify(req.body),
+      response: JSON.stringify(response)
+    }).catch(err => {
+      console.log(`Airtable Error: ${err.message}`)
+    });
+
+    res.status(200).json(response);
   } catch(err) {
     next(err);
   }
 };
 
 module.exports = {
-  getSlotMachineResult
+  getSlotMachineResult,
+  saveAnalytics
 };
