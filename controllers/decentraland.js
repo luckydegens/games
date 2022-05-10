@@ -143,9 +143,7 @@ const saveAnalytics = async (req, res, next) => {
       throw new APIError(400, 'Event is required');
     }
 
-    const response = {
-      success: true
-    };
+    const response = { success: true };
 
     await activityAirtable.create({
       userId, event,
