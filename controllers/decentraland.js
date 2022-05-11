@@ -82,7 +82,7 @@ const getSlotMachineResult = async (req, res, next) => {
     const chances = {
       panda: 0,
       og: 10000,
-      bull: 100,
+      bull: 1000,
       ape: 0,
       whale: 0,
       frog: 0
@@ -116,7 +116,7 @@ const getSlotMachineResult = async (req, res, next) => {
         win: !!winFaces,
         faces: resultFaces,
         availableAttempts: MAX_GAMES_PER_DAY - (previousGames.length + 1),
-        message: !!winFaces ? `Congratulation! you just won a ${winFaces} NFT. We whitelisted your wallet adress for the next mint. For any question, go to our discord.` : `Sorry you didn't win this time, try again`
+        message: !!winFaces ? `Congratulation! you just won a Lucky ${winFaces} NFT. We whitelisted your wallet address for the next mint. For any question, go to our discord.` : `Sorry you didn't win this time, try again`
       }
     };
 

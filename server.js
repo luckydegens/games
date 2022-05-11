@@ -50,10 +50,10 @@ const initServer = (database) => {
 
   app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Origin, X-Requested-With, Content-Type, Accept'
-    );
+    res.header('Access-Control-Allow-Headers', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,HEAD,POST');
+    res.header('Access-Control-Expose-Headers', 'location,link');
+  
     next();
   });
 
@@ -69,4 +69,3 @@ const initServer = (database) => {
 }
 
 require('./database')(initServer);
-
