@@ -53,7 +53,11 @@ const initServer = (database) => {
     res.header('Access-Control-Allow-Headers', '*');
     res.header('Access-Control-Allow-Methods', 'GET,HEAD,POST');
     res.header('Access-Control-Expose-Headers', 'location,link');
-  
+    res.header(
+      'Access-Control-Allow-Headers',
+      'Origin, X-Requested-With, Content-Type, Accept'
+    );
+
     next();
   });
 
