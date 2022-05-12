@@ -44,6 +44,8 @@ const getSlotMachineResult = async (req, res, next) => {
   try {
     const { walletId, userId } = req.body;
 
+    console.log(req.body)
+
     if (!walletId) {
       return res.status(200).json({
         success: false,
