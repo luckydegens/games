@@ -49,7 +49,10 @@ const getSlotMachineResult = async (req, res, next) => {
     if (!walletId || walletId == "null") {
       return res.status(200).json({
         success: false,
-        error: "Not wallet ID was provided"
+        error: "Not wallet ID was provided",
+        data: {
+          message: `You need to connect your wallet to play`
+        }
       })
     }
 
