@@ -46,7 +46,7 @@ const getSlotMachineResult = async (req, res, next) => {
 
     console.log(req.body)
 
-    if (!walletId) {
+    if (!walletId || walletId == "null") {
       return res.status(200).json({
         success: false,
         error: "Not wallet ID was provided"
