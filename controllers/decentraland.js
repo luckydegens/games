@@ -4,9 +4,12 @@ const mongoose = require('mongoose');
 const GameResult = mongoose.model('GameResult');
 
 const { APIError } = require('../helpers/errors');
+const { getBrowserInfo, getIP, parseUserAgent } = require('../lib/utils');
 
 const airtable = require('../lib/airtable');
 const activityAirtable = airtable('app0EcfjD3KNKygVG', 'activity');
+
+const ipdata = require('../lib/ipdata');
 
 const MAX_GAMES_PER_DAY = 10;
 
@@ -26,25 +29,41 @@ const getRandomFaces = (faces) => {
   return result;
 };
 
-const pushSlotDataToAirtable = async ({ walletId, userId = null, winFaces = null, request, response }) => {
+const pushDataToAirtable = async(req, data) => {
+  const ip = getIP(req);
+  const ua = getBrowserInfo(req);
+
+  const uaData = parseUserAgent(ua);
+  const ipData = (await ipdata(ip)) || {};
+
+  return await activityAirtable.create({
+    ...data, ip, ua,
+    device: uaData.device,
+    browser: uaData.browser,
+    os: uaData.os,
+    country: ipData.country_name,
+    region: ipData.region,
+    city: ipData.city
+  }).catch(err => {
+    console.log(`Airtable Error: ${err.message}`)
+  });
+}
+
+const pushSlotDataToAirtable = async (req, { walletId, userId = null, winFaces = null, body, response }) => {
   const event = !!winFaces ? 'win' : 'lose';
   const notes = !!winFaces ? `win ${winFaces}` : 'lose';
 
-  return await activityAirtable.create({
+  return pushDataToAirtable(req, {
     userId, event, notes,
     wallet: `${walletId}`,
-    request: JSON.stringify(request),
+    request: JSON.stringify(body),
     response: JSON.stringify(response)
-  }).catch(err => {
-    console.log(`Airtable Error: ${err.message}`)
   });
 };
 
 const getSlotMachineResult = async (req, res, next) => {
   try {
     const { walletId, userId } = req.body;
-
-    console.log(req.body)
 
     if (!walletId || walletId == "null") {
       return res.status(200).json({
@@ -76,9 +95,9 @@ const getSlotMachineResult = async (req, res, next) => {
         }
       };
 
-      await pushSlotDataToAirtable({
+      await pushSlotDataToAirtable(req, {
         walletId, userId, response,
-        request: req.body
+        body: req.body
       });
 
       return res.status(200).json(response);
@@ -125,9 +144,9 @@ const getSlotMachineResult = async (req, res, next) => {
       }
     };
 
-    await pushSlotDataToAirtable({
-      walletId, userId, response, winFaces,
-      request: req.body
+    await pushSlotDataToAirtable(req, {
+      walletId, userId, response, winFaces, req,
+      body: req.body
     });
 
     res.status(200).json(response);
@@ -150,13 +169,11 @@ const saveAnalytics = async (req, res, next) => {
 
     const response = { success: true };
 
-    await activityAirtable.create({
+    await pushDataToAirtable(req, {
       userId, event,
       wallet: `${walletId}`,
       request: JSON.stringify(req.body),
       response: JSON.stringify(response)
-    }).catch(err => {
-      console.log(`Airtable Error: ${err.message}`)
     });
 
     res.status(200).json(response);
