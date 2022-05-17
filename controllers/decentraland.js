@@ -50,8 +50,8 @@ const pushDataToAirtable = async(req, data) => {
 }
 
 const pushSlotDataToAirtable = async (req, { walletId, userId = null, winFaces = null, body, response }) => {
-  const event = !!winFaces ? 'win' : 'lose';
-  const notes = !!winFaces ? `win ${winFaces}` : 'lose';
+  const event = !!winFaces ? 'play slot : win' : 'play slot : lose';
+  const notes = !!winFaces ? `play slot : win ${winFaces}` : 'play slot : lose';
 
   return pushDataToAirtable(req, {
     userId, event, notes,
