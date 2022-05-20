@@ -5,6 +5,7 @@ const GameResult = mongoose.model('GameResult');
 
 const { APIError } = require('../helpers/errors');
 const { getBrowserInfo, getIP, parseUserAgent } = require('../lib/utils');
+const { addWalletToLaunchpadEvent } = require('../helpers/launchpad');
 
 const airtable = require('../lib/airtable');
 const activityAirtable = airtable('app0EcfjD3KNKygVG', 'activity');
@@ -148,6 +149,15 @@ const getSlotMachineResult = async (req, res, next) => {
       walletId, userId, response, winFaces, req,
       body: req.body
     });
+
+    if (winFaces && winFaces === 'og') {
+      // Need setup correct colectionKey & eventId
+      await addWalletToLaunchpadEvent({
+        wallet: walletId,
+        collectionKey: 'og',
+        eventId: 'cl3a1hym2115773s605e6xtg3'
+      });
+    }
 
     res.status(200).json(response);
   } catch(err) {
