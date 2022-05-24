@@ -5,8 +5,6 @@ const { getPreviousGames, getFacesByChances } = require('../../../../../helpers/
 const { addWalletToLaunchpadEvent } = require('../../../../../helpers/launchpad');
 const { pushSlotDataToAirtable } = require('../../../../../helpers/airtable');
 
-const getMaxGamesPerDay= (vip) => vip ? 20 : 10;
-
 const getChances = (vip) => vip ? ({
   panda: 0,
   og: 10000,
@@ -28,7 +26,7 @@ module.exports = async (req, res, next) => {
     const { userId } = req.body;
 
     const previousGames = await getPreviousGames(req.wallet, 'slot1');
-    const maxGamesPerDay = getMaxGamesPerDay(req.wallet.moreSpin);
+    const maxGamesPerDay = req.wallet.spinAmount;
 
     if (previousGames.length >= maxGamesPerDay) {
       const response = {

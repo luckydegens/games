@@ -9,8 +9,9 @@ const Wallet = new keystone.List('Wallet', {
 Wallet.add({
   name: { type: Types.Text, unique: true, required: true, initial: true },
   betterChance: { type: Types.Boolean, default: false, required: true, initial: true },
-  moreSpin: { type: Types.Boolean, default: false, required: true, initial: true }
+  spinAmount: { type: Types.Number, default: 10, required: true, initial: true },
+  // moreSpin: { type: Types.Boolean, default: false, required: true, initial: true }
 });
 
-Wallet.defaultColumns = 'name, betterChance, moreSpin';
+Wallet.defaultColumns = 'name, betterChance, spinAmount';
 Wallet.register();
