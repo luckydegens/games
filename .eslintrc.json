@@ -1,0 +1,16 @@
+{
+  "extends": "keystone",
+  "rules": {
+      "semi": ["error", "always"],
+      "indent": ["error", 2]
+  },
+  "env": {
+    "node": true,
+    "mocha": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  }
+}
