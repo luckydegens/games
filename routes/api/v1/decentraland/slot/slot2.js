@@ -5,7 +5,16 @@ const { getPreviousGames, getFacesByChances } = require('../../../../../helpers/
 const { addWalletToLaunchpadEvent } = require('../../../../../helpers/launchpad');
 const { pushSlotDataToAirtable } = require('../../../../../helpers/airtable');
 
-const { getMaxGamesPerDay, getChances } = require('../../../../../config/slot').slot2;
+const getMaxGamesPerDay = (vip) => vip ? 10 : 5;
+const getChances = (vip) => vip ? ({
+  test1: 0,
+  test2: 10000,
+  test3: 1000
+}) : ({
+  test1: 0,
+  test2: 10000,
+  test3: 1000
+});
 
 module.exports = async (req, res, next) => {
   try {
