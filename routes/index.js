@@ -9,6 +9,10 @@ const routes = {
 
 // Setup Route Bindings
 exports = module.exports = function (app) {
+  app.get('/', keystone.middleware.api, function(req, res) {
+    return res.redirect('/keystone');
+  });
+
   // API
   app.all('/api/*', keystone.middleware.api, function (req, res, next) {
     try {

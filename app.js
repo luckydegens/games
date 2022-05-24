@@ -19,6 +19,8 @@ keystone.init({
       shortName: 'Eng',
     },
   ],
+  'static': 'public',
+  'signin logo': ['../logo.png', 200, 'auto'],
   'favicon': 'public/favicon.ico',
   'auto update': true,
   'session': true,
