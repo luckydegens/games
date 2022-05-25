@@ -52,6 +52,10 @@ const parseUserAgent = (ua) => {
   }
 };
 
+function getRndFloat(min, max) {
+  return ((Math.random() * (max - min + 1) ) + min).toFixed(2);
+}
+
 module.exports = {
   jsonParse,
   timeout,
@@ -61,5 +65,6 @@ module.exports = {
   getCountry,
   getIP,
   removeExtensionFromFile,
-  parseUserAgent
+  parseUserAgent,
+  getRndFloat
 };

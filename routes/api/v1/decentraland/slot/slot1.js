@@ -5,6 +5,8 @@ const { getPreviousGames, getFacesByChances } = require('../../../../../helpers/
 const { addWalletToLaunchpadEvent } = require('../../../../../helpers/launchpad');
 const { pushSlotDataToAirtable } = require('../../../../../helpers/airtable');
 
+const { getRndFloat } = require('../../../../../helpers/utils');
+
 const getChances = (vip) => vip ? ({
   panda: 0,
   og: 10000,
@@ -55,13 +57,23 @@ module.exports = async (req, res, next) => {
       win: !!winFaces
     });
 
+    let message = `Sorry you didn't win this time, try again`
+
+    if (winFaces == "ape") {
+      const winAmount = getRndFloat(5, 10);
+
+      message = `Congratulation! you just won ${winAmount}. Post on discord to claim it`;
+    } else if (winFaces){
+      message = `Congratulation! you just won a Lucky ${winFaces} NFT. We whitelisted your wallet address for the next mint. For any question, go to our discord.`
+    }
+
     const response = {
       success : true,
       data: {
         win: !!winFaces,
         faces: resultFaces,
         availableAttempts: maxGamesPerDay - (previousGames.length + 1),
-        message: !!winFaces ? `Congratulation! you just won a Lucky ${winFaces} NFT. We whitelisted your wallet address for the next mint. For any question, go to our discord.` : `Sorry you didn't win this time, try again`
+        message
       }
     };
 
