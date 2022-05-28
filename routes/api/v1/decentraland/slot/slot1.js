@@ -9,16 +9,16 @@ const { getRndFloat } = require('../../../../../helpers/utils');
 
 const getChances = (vip) => vip ? ({
   panda: 0,
-  og: 10000,
-  bull: 1000,
-  ape: 0,
+  og: 1000,
+  bull: 100,
+  ape: 100,
   whale: 0,
   frog: 0
 }) : ({
   panda: 0,
   og: 10000,
   bull: 1000,
-  ape: 0,
+  ape: 100,
   whale: 0,
   frog: 0
 });
@@ -57,14 +57,14 @@ module.exports = async (req, res, next) => {
       win: !!winFaces
     });
 
-    let message = `Sorry you didn't win this time, try again`
+    let message = `Sorry you didn't win this time, try again`;
 
     if (winFaces == "ape") {
-      const winAmount = getRndFloat(5, 10);
-
+      const winAmount = getRndFloat(5, 20);
       message = `Congratulation! you just won ${winAmount}. Post on discord to claim it`;
     } else if (winFaces){
-      message = `Congratulation! you just won a Lucky ${winFaces} NFT. We whitelisted your wallet address for the next mint. For any question, go to our discord.`
+
+      message = `Congratulation! you just won a Lucky ${winFaces} NFT. We whitelisted your wallet address for the next mint. For any question, go to our discord.`;
     }
 
     const response = {
