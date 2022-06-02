@@ -4,10 +4,19 @@ const Schema = mongoose.Schema;
 const { ObjectId } = mongoose.Schema.Types
 
 const GameResultSchema = new Schema({
-  gameName: {
+  casino: {
     type: String,
     required: true
   },
+  game: {
+    type: String,
+    required: true
+  },
+  gameVersion: {
+    type: String,
+    required: true
+  },
+  coordinates: String,
   walletId: {
     type: ObjectId,
     ref: 'Wallet',

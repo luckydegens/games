@@ -24,14 +24,19 @@ const pushDataToAirtable = async(req, data) => {
   });
 };
 
-const pushSlotDataToAirtable = async (req, { walletId, userId = null, winFaces = null, body, response }) => {
+const pushSlotDataToAirtable = async (req, { walletId, winFaces = null, response }) => {
   const event = !!winFaces ? 'play slot : win' : 'play slot : lose';
   const notes = !!winFaces ? `play slot : win ${winFaces}` : 'play slot : lose';
 
   return pushDataToAirtable(req, {
-    userId, event, notes,
+    casino: req.casino,
+    game: req.game,
+    game_version: req.gameVersion,
+    coordinates: JSON.stringify(req.body.coordinates || {}),
+    userId: req.body.userId,
+    event, notes,
     wallet: `${walletId}`,
-    request: JSON.stringify(body),
+    request: JSON.stringify(req.body),
     response: JSON.stringify(response)
   });
 };

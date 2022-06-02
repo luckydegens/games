@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const getSlot1MachineResult = require('../controllers/slot/slot1');
+const { playCasinoGame } = require('../controllers/casino');
 const { saveAnalytics } = require('../controllers/analytics');
 
 const { retrieveWallet } = require('../middleware/wallet');
 
-router.post('/slot1', retrieveWallet, getSlot1MachineResult);
+router.post('/:casino/:game/:gameVersion', retrieveWallet, playCasinoGame);
 
 router.post('/analytics', saveAnalytics);
 

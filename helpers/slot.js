@@ -1,19 +1,20 @@
 const mongoose = require('mongoose');
 const GameResult = mongoose.model('GameResult');
 
-const getPreviousGames = async (wallet, gameName) => {
+const getPreviousGames = async (wallet, casino, game, gameVersion) => {
   const now = new Date();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   
   const previousGames = await GameResult.find({
-    gameName,
+    casino,
+    game,
     wallet: wallet.id,
     createdAt: {
       $gte: startOfToday
     }
   });
   
-  return previousGames
+  return previousGames;
 };
 
 const getRandomFaces = (faces) => {
