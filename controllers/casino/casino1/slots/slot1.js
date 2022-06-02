@@ -9,16 +9,16 @@ const { getRndFloat } = require('../../../../lib/utils');
 
 const getChances = (vip) => vip ? ({
   panda: 0,
-  og: 10000,
-  bull: 1000,
-  ape: 0,
+  og: 1000,
+  bull: 100,
+  ape: 100,
   whale: 0,
   frog: 0
 }) : ({
   panda: 0,
   og: 10000,
   bull: 1000,
-  ape: 0,
+  ape: 1000,
   whale: 0,
   frog: 0
 });
