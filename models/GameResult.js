@@ -1,13 +1,16 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const { ObjectId } = mongoose.Schema.Types
+
 const GameResultSchema = new Schema({
   gameName: {
     type: String,
     required: true
   },
   walletId: {
-    type: String,
+    type: ObjectId,
+    ref: 'Wallet',
     required: true
   },
   win: {

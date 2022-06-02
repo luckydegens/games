@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const { getSlotMachineResult, saveAnalytics } = require('../controllers/decentraland');
+const getSlot1MachineResult = require('../controllers/slot/slot1');
+const { saveAnalytics } = require('../controllers/analytics');
 
-router.post('/slot1', getSlotMachineResult);
+const { retrieveWallet } = require('../middleware/wallet');
+
+router.post('/slot1', retrieveWallet, getSlot1MachineResult);
 
 router.post('/analytics', saveAnalytics);
 
