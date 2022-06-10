@@ -7,7 +7,7 @@ const getPreviousGames = async (wallet, gameName) => {
   
   const previousGames = await GameResult.find({
     gameName,
-    wallet: wallet.id,
+    walletId: wallet._id,
     createdAt: {
       $gte: startOfToday
     }
