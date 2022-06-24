@@ -7,7 +7,7 @@ const retrieveWallet = async (req, res, next) => {
   try {
     const { walletId } = req.body;
 
-    if (!walletId || !Web3.utils.isAddress(walletId)) {
+    if ((!walletId || !Web3.utils.isAddress(walletId)) && req.requiredWallet) {
       return res.status(200).json({
         success: false,
         error: "Not wallet ID was provided",
@@ -17,19 +17,31 @@ const retrieveWallet = async (req, res, next) => {
       })
     }
 
-    let wallet = await Wallet.findOne({
-      name: walletId
-    }).exec();
-
-    if (!wallet) {
-      wallet = await Wallet.create({
-        name: walletId,
-        betterChance: false,
-        moreSpin: false
-      });
+    if (walletId) {
+      let wallet = await Wallet.findOne({
+        name: walletId
+      }).exec();
+  
+      if (!wallet) {
+        wallet = await Wallet.create({
+          name: walletId,
+          betterChance: false,
+          moreSpin: false
+        });
+      }
+  
+      req.wallet = wallet;
     }
 
-    req.wallet = wallet;
+    next();
+  } catch(err) {
+    next(err);
+  }
+};
+
+const requiredWallet = async (req, res, next) => {
+  try {
+    req.requiredWallet = true;
 
     next();
   } catch(err) {
@@ -38,5 +50,6 @@ const retrieveWallet = async (req, res, next) => {
 };
 
 module.exports = {
+  requiredWallet,
   retrieveWallet
 };

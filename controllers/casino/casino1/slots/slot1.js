@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const GameResult = mongoose.model('GameResult');
 
-const { getFacesByChances } = require('../../../../helpers/slot');
+const { getFacesByChances } = require('../../../../helpers/faces');
 const { addWalletToLaunchpadEvent } = require('../../../../helpers/launchpad');
 const { pushSlotDataToAirtable } = require('../../../../helpers/airtable');
 

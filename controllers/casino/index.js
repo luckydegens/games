@@ -1,6 +1,6 @@
 const { APIError } = require('../../helpers/errors');
 
-const { getPreviousGames } = require('../../helpers/slot');
+const { getPreviousGames } = require('../../helpers/games');
 const { pushSlotDataToAirtable } = require('../../helpers/airtable');
 
 const games = {
