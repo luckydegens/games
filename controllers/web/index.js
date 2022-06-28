@@ -14,7 +14,7 @@ const games = {
 
 const playWebGame = async function(req, res, next) {
   try {
-    const { game, gameVersion, walletId } = req.params;
+    const { game, gameVersion } = req.params;
 
     if (!Object.keys(games).includes(game)) {
       throw new APIError(400, `Game doesn't exist`);
@@ -47,6 +47,7 @@ const playWebGame = async function(req, res, next) {
           success: true,
           data: {
             message: `You already played ${maxGamesPerDay} time today, try again tomorrow!`,
+            limitExhausted: true,
             availableAttempts: 0
           }
         });
